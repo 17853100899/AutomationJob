@@ -25,6 +25,8 @@ import net.sf.json.JSONObject;
 
 public class Constant {
 
+	static boolean friststart = true;
+
 	/**
 	 * 工作账号
 	 */
@@ -290,7 +292,7 @@ public class Constant {
 				e.printStackTrace();
 			}
 		}
-//		Constant.Logg("路径" + filePath + "读取出来的文件内容是：" + result);
+		// Constant.Logg("路径" + filePath + "读取出来的文件内容是：" + result);
 		return result;
 	}
 
@@ -384,10 +386,15 @@ public class Constant {
 			}
 			Constant.Logg("用户名：" + Constant.getUserID() + "\n数据个数：" + i);
 			Constant.setNumberOfTasks(i);
-			System.out.println("输入任务天数：");
-			Scanner input = new Scanner(System.in);
-			Constant.setDayOfTasks(input.nextInt());
-			Constant.setDayOfTasksNumber((int) Math.ceil(Constant.getNumberOfTasks() / Constant.getDayOfTasks()));
+			if (friststart) {
+				System.out.println("输入任务天数：");
+				Scanner input = new Scanner(System.in);
+				Constant.setDayOfTasks(input.nextInt());
+			}
+			friststart = false;
+			// Constant.setDayOfTasksNumber((int) Math.ceil(Constant.getNumberOfTasks() /
+			// Constant.getDayOfTasks()));
+			Constant.setDayOfTasksNumber(500);
 			System.out.println("每天完成任务数：[" + Constant.getDayOfTasksNumber() + "]");
 			System.out.println("开始工作");
 			return true;
@@ -494,6 +501,11 @@ public class Constant {
 						// structuralTaskJsonAndSend(file2.getAbsolutePath());
 					} else if (data.indexOf(file2.getName().substring(0, 7)) != -1) {
 						Constant.Logg("路径" + path + "下有文件" + file2.getName());
+						try {
+							Thread.sleep(80000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						String oneTask = Constant.structureTaskJson(Constant.readTxtFile(file2.getAbsolutePath()),
 								file2.getName());
 						if (!oneTask.equals("任务格式错误") && !oneTask.equals("未找到任务时间")) {
@@ -593,8 +605,9 @@ public class Constant {
 					Constant.thisLa = REALLNG;// 记录本次经纬度
 					Constant.Logg("原经度：" + jo6.getDouble("GEOX") + "原纬度：" + jo6.getDouble("GEOY") + "偏移后经度：" + REALLNG
 							+ "偏移后纬度：" + REALLAT);
-					map.put("CHECKTIME", CompletionOfInspectionData.addTimeThroughDistance());// 通过经纬度差值获取时间
-					// map.put("CHECKTIME", CompletionOfInspectionData.addTime());//直接获取时间
+					// map.put("CHECKTIME", CompletionOfInspectionData.addTimeThroughDistance());//
+					// 通过经纬度差值获取时间
+					map.put("CHECKTIME", CompletionOfInspectionData.addTime());// 直接获取时间
 					map.put("DISTANCE", CompletionOfInspectionData.getDistance(jo6.getDouble("GEOY"),
 							jo6.getDouble("GEOX"), REALLAT, REALLNG));
 					map.put("ID", jo6.getInt("ID"));

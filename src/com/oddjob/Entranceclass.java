@@ -75,6 +75,11 @@ class Tasking implements Runnable {
 				Constant.Logg("任务清零，今日份工作重新开始");
 				CompletionOfInspectionData.taskNum = 0;
 				CompletionOfInspectionData.tasking = false;
+				Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()), Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
+				Constant.writeTxtFile(
+						Constant.decomposingTaskNamesAndID(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
+						Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
+				Constant.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt"));// 从服务器读取单个待巡检任务并储存
 			}
 			if (calendar.get(Calendar.HOUR_OF_DAY) == 8) {
 				CompletionOfInspectionData.tasking = true;
