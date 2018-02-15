@@ -30,7 +30,7 @@ public class Entranceclass {
 		threadStartUp.start();
 		Tasking tasking = new Tasking();
 		Thread threadTasking = new Thread(tasking);
-		threadTasking.start();
+//		threadTasking.start();
 
 	}
 
