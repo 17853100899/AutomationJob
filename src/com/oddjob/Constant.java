@@ -404,7 +404,7 @@ public class Constant {
 				Scanner input = new Scanner(System.in);
 				Constant.setDayOfTasks(input.nextInt());
 			}
-			Constant.setSleep((16 - CompletionOfInspectionData.addNewTime()) / Constant.getNumberOfTasks());
+			Constant.setSleep(((16 - CompletionOfInspectionData.addNewTime()) * 60 * 60) / Constant.getNumberOfTasks());
 			System.out.println("每条任务休眠时间：" + Constant.getSleep());
 			friststart = false;
 			// Constant.setDayOfTasksNumber((int) Math.ceil(Constant.getNumberOfTasks() /
@@ -508,7 +508,7 @@ public class Constant {
 			if (files.length == 0) {
 				Constant.Logg("路径" + path + "下文件夹是空的!休眠一分钟");
 				try {
-					Thread.sleep(Constant.getSleep());
+					Thread.sleep(60000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -531,7 +531,7 @@ public class Constant {
 					} else if (data.indexOf(file2.getName().substring(0, 7)) != -1) {
 						Constant.Logg("路径" + path + "下有文件" + file2.getName());
 						try {
-							Thread.sleep(80000);
+							Thread.sleep(Constant.getSleep());
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
