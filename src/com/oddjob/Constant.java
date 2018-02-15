@@ -530,8 +530,9 @@ public class Constant {
 						// structuralTaskJsonAndSend(file2.getAbsolutePath());
 					} else if (data.indexOf(file2.getName().substring(0, 7)) != -1) {
 						Constant.Logg("路径" + path + "下有文件" + file2.getName());
+						Constant.Logg("休眠：" + Constant.getSleep());
 						try {
-							Thread.sleep(Constant.getSleep());
+							Thread.sleep((long) (Constant.getSleep() * 1000));
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
