@@ -53,6 +53,11 @@ public class Constant {
 	public static int dayOfTasksNumber;
 
 	/**
+	 * 休眠时间
+	 */
+	public static int sleep;
+
+	/**
 	 * 文件储存路径
 	 */
 	public static String filePath;
@@ -125,6 +130,14 @@ public class Constant {
 
 	public static void setDayOfTasksNumber(int dayOfTasksNumber) {
 		Constant.dayOfTasksNumber = dayOfTasksNumber;
+	}
+
+	public static int getSleep() {
+		return sleep;
+	}
+
+	public static void setSleep(int sleep) {
+		Constant.sleep = sleep;
 	}
 
 	public static String getFilePath() {
@@ -391,6 +404,8 @@ public class Constant {
 				Scanner input = new Scanner(System.in);
 				Constant.setDayOfTasks(input.nextInt());
 			}
+			Constant.setSleep((16 - CompletionOfInspectionData.addNewTime()) / Constant.getNumberOfTasks());
+			System.out.println("每条任务休眠时间：" + Constant.getSleep());
 			friststart = false;
 			// Constant.setDayOfTasksNumber((int) Math.ceil(Constant.getNumberOfTasks() /
 			// Constant.getDayOfTasks()));
@@ -491,7 +506,21 @@ public class Constant {
 		if (file.exists()) {
 			File[] files = file.listFiles();
 			if (files.length == 0) {
-				Constant.Logg("路径" + path + "下文件夹是空的!");
+				Constant.Logg("路径" + path + "下文件夹是空的!休眠一分钟");
+				try {
+					Thread.sleep(Constant.getSleep());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()), Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
+
+				Constant.writeTxtFile(
+						Constant.decomposingTaskNamesAndID(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
+						Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
+
+				Constant.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt"));// 从服务器读取单个待巡检任务并储存
+
+				Constant.structuralTaskJsonAndSend(Constant.getUnfinishedTask());// 发送任务
 				return;
 			} else {
 				String data = Constant.getURL(Constant.getOverallTask());
@@ -526,7 +555,21 @@ public class Constant {
 								+ "任务已上传，本次跳过");
 					}
 				}
-				Constant.Logg("路径" + path + "下所有任务全部完成!");
+				Constant.Logg("路径" + path + "下所有任务全部完成!休眠一分钟");
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()), Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
+
+				Constant.writeTxtFile(
+						Constant.decomposingTaskNamesAndID(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
+						Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
+
+				Constant.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt"));// 从服务器读取单个待巡检任务并储存
+
+				Constant.structuralTaskJsonAndSend(Constant.getUnfinishedTask());// 发送任务
 			}
 		} else {
 			Constant.Logg("路径" + path + "下无文件!");

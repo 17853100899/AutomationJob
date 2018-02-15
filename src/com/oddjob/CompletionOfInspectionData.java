@@ -139,10 +139,26 @@ public class CompletionOfInspectionData {
 	 * @return
 	 */
 	public static String addTime() {
-		
+
 		Date dateTime = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return df.format(new Date(dateTime.getTime()));
+
+	}
+
+	/**
+	 * 获取时间小时
+	 * 
+	 * @param dateTime
+	 * @param n
+	 * @return
+	 */
+	public static int addNewTime() {
+
+		Date dateTime = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dateTime);
+		return calendar.get(Calendar.HOUR_OF_DAY);
 
 	}
 

@@ -27,8 +27,11 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String a = "\\";
-		System.out.println(a);
+//		String a = "\\";
+//		System.out.println(a);
+		int a= 5,b = 3,c;
+		c = a/b;
+		System.out.println(c);
 		// System.out.println(CompletionOfInspectionData.getDistance(36.68229763455801,
 		// 116.97321839868977,
 		// CompletionOfInspectionData.latitudinalMigration(36.68229763455801),
