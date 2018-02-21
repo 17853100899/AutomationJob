@@ -290,7 +290,7 @@ public class Constant {
 				e.printStackTrace();
 			}
 		}
-//		Constant.Logg("路径" + filePath + "读取出来的文件内容是：" + result);
+		// Constant.Logg("路径" + filePath + "读取出来的文件内容是：" + result);
 		return result;
 	}
 
@@ -372,15 +372,26 @@ public class Constant {
 	 */
 	public static boolean decomposingOneTask(String content) {
 		try {
-			JSONArray ja1 = JSONArray.fromObject(content);
+			JSONArray ja = JSONArray.fromObject(content);
 			int i = 0;
-			for (; i < ja1.size(); i++) {
-				JSONObject jo1 = ja1.getJSONObject(i);
-				jo1.getString("TASKNAME");
-				jo1.getString("ID");
-				Constant.writeTxtFile(Constant.getURL(Constant.getSingleTask() + jo1.getString("ID")),
-						Constant.getUnfinishedTask() + jo1.getString("ID")
-								+ jo1.getString("TASKNAME").replace('/', ' ').replace('\\', ' ') + ".txt");
+			String data = "";
+			for (; i < ja.size(); i++) {
+				JSONObject jo = ja.getJSONObject(i);
+				jo.getString("TASKNAME");
+				jo.getString("ID");
+				data = Constant.getURL(Constant.getSingleTask() + jo.getString("ID"));
+
+				JSONObject jo1 = JSONObject.fromObject(data);
+				JSONObject jo2 = jo1.getJSONObject("obj");
+				if (jo2.getString("SUBLIST").length() < 5) {
+					// 缺少任务点
+					Constant.writeTxtFile(data, Constant.getFormatErrorTask() + jo.getString("ID")
+							+ jo.getString("TASKNAME").replace('/', ' ').replace('\\', ' ') + ".txt");
+				} else {
+					// 正常任务点
+					Constant.writeTxtFile(data, Constant.getUnfinishedTask() + jo.getString("ID")
+							+ jo.getString("TASKNAME").replace('/', ' ').replace('\\', ' ') + ".txt");
+				}
 			}
 			Constant.Logg("用户名：" + Constant.getUserID() + "\n数据个数：" + i);
 			Constant.setNumberOfTasks(i);
@@ -574,7 +585,7 @@ public class Constant {
 				JSONArray ja3 = JSONArray.fromObject(list);
 
 				JSONObject jo5 = new JSONObject();
-				jo5.put("CHECKER", "DW3_LIQINGLIANG");
+				jo5.put("CHECKER", Constant.getUserID().toUpperCase());
 				jo5.put("COMMITTYPE", "0:******TASKCOMMIT");
 				jo5.put("LENGTH", 0);
 				jo5.put("RATE", 0);
