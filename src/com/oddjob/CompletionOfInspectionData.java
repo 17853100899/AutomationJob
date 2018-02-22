@@ -175,12 +175,6 @@ public class CompletionOfInspectionData {
 			return;
 		}
 		Constant.Logg("今日份任务已完成，正在休眠。[" + CompletionOfInspectionData.addTime() + "]");
-		try {
-			Thread.sleep(300000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		CompletionOfInspectionData.workTime();
 	}
 
 	/**
