@@ -61,12 +61,9 @@ class StartUp implements Runnable {
 }
 
 class Tasking implements Runnable {
-
 	@Override
 	public void run() {
-
 		do {
-
 			Date dateTime = new Date();
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(dateTime);
@@ -75,23 +72,37 @@ class Tasking implements Runnable {
 				Constant.Logg("任务清零，今日份工作重新开始");
 				CompletionOfInspectionData.taskNum = 0;
 				CompletionOfInspectionData.tasking = false;
-				Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()), Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
-				Constant.writeTxtFile(
-						Constant.decomposingTaskNamesAndID(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
-						Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
-				Constant.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt"));// 从服务器读取单个待巡检任务并储存
+				do {
+					// 服务器任务未刷新
+					try {
+						Thread.sleep(300000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()),
+							Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
+					Constant.writeTxtFile(
+							Constant.decomposingTaskNamesAndID(
+									Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
+							Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
+				} while (!Constant
+						.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt")));// 从服务器读取单个待巡检任务并储存
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						Constant.structuralTaskJsonAndSend(Constant.getUnfinishedTask());// 发送任务
+					}
+				}).start();
 			}
 			if (calendar.get(Calendar.HOUR_OF_DAY) == 8) {
 				CompletionOfInspectionData.tasking = true;
 			}
+			Constant.Logg("任务监控，正在休眠");
 			try {
 				Thread.sleep(600000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
 		} while (true);
-
 	}
-
 }
