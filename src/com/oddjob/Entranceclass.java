@@ -45,15 +45,26 @@ class StartUp implements Runnable {
 				&& Constant.createDirectory(Constant.getFinishedTask())
 				&& Constant.createDirectory(Constant.getFormatErrorTask())) {// 判断所需路径是否存在，若不存在就创建
 
-			Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()), Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
-
-			Constant.writeTxtFile(
-					Constant.decomposingTaskNamesAndID(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
-					Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
-
-			Constant.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt"));// 从服务器读取单个待巡检任务并储存
-
-			Constant.structuralTaskJsonAndSend(Constant.getUnfinishedTask());// 发送任务
+			do {
+				if (!Constant.friststart) {
+					// 服务器任务未刷新
+					try {
+						Thread.sleep(300000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				Constant.writeTxtFile(Constant.getURL(Constant.getOverallTask()), Constant.getFilePath() + "待巡检任务.txt");// 从服务器读取所有待巡检任务并储存
+				Constant.writeTxtFile(
+						Constant.decomposingTaskNamesAndID(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务.txt")),
+						Constant.getFilePath() + "待巡检任务名和对应ID.txt");// 分解待巡检任务名和对应ID并储存
+			} while (!Constant.decomposingOneTask(Constant.readTxtFile(Constant.getFilePath() + "待巡检任务名和对应ID.txt")));// 从服务器读取单个待巡检任务并储存
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					Constant.structuralTaskJsonAndSend(Constant.getUnfinishedTask());// 发送任务
+				}
+			}).start();
 		}
 
 	}

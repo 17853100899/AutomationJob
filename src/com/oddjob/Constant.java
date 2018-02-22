@@ -388,7 +388,7 @@ public class Constant {
 	public static boolean decomposingOneTask(String content) {
 		try {
 			JSONArray ja = JSONArray.fromObject(content);
-			int i = 0;
+			int i = 0, j = 0;
 			String data = "";
 			for (; i < ja.size(); i++) {
 				JSONObject jo = ja.getJSONObject(i);
@@ -403,6 +403,7 @@ public class Constant {
 					Constant.writeTxtFile(data, Constant.getFormatErrorTask() + jo.getString("ID")
 							+ jo.getString("TASKNAME").replace('/', ' ').replace('\\', ' ') + ".txt");
 				} else {
+					j++;
 					// 正常任务点
 					Constant.writeTxtFile(data, Constant.getUnfinishedTask() + jo.getString("ID")
 							+ jo.getString("TASKNAME").replace('/', ' ').replace('\\', ' ') + ".txt");
@@ -410,16 +411,16 @@ public class Constant {
 			}
 			Constant.Logg("用户名：" + Constant.getUserID() + "\n数据个数：" + i);
 			Constant.setNumberOfTasks(i);
-			if (i < 400) {
+			if (j == 0) {
 				Constant.Logg("服务器任务未刷新,稍后重试.");
 				return false;
 			}
-			// if (friststart) {
-			// System.out.println("输入任务天数：");
-			// Scanner input = new Scanner(System.in);
-			// Constant.setDayOfTasks(input.nextInt());
-			Constant.setDayOfTasks(1);
-			// }
+			if (friststart) {
+				System.out.println("输入任务天数：");
+				Scanner input = new Scanner(System.in);
+				Constant.setDayOfTasks(input.nextInt());
+				// Constant.setDayOfTasks(1);
+			}
 			int sleep = ((17 - CompletionOfInspectionData.addNewTime()) * 60 * 60) / Constant.getNumberOfTasks();
 			if (sleep > 0) {
 				Constant.setSleep(sleep);
@@ -621,7 +622,7 @@ public class Constant {
 				JSONArray ja3 = JSONArray.fromObject(list);
 
 				JSONObject jo5 = new JSONObject();
-				jo5.put("CHECKER", "DW3_LIQINGLIANG");
+				jo5.put("CHECKER", Constant.getUserID().toUpperCase());
 				jo5.put("COMMITTYPE", "0:******TASKCOMMIT");
 				jo5.put("LENGTH", 0);
 				jo5.put("RATE", 0);
